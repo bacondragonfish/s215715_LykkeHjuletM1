@@ -10,15 +10,13 @@ class CategoryController {
 
     // Our category values with their words in them.
     fun categoryValues() {
-        val cakes =
-            WordCategories("Cakes", listOf(Word("Cookie"), Word("Brownie"), Word("Pancake")))
-        val sports =
-            WordCategories("Sport", listOf(Word("Football"), Word("Handball"), Word("Basketball")))
+        val cakes = WordCategories("Cakes", listOf(Word("Cookie"), Word("Brownie"), Word("Pancake")))
+        val sports = WordCategories("Sport", listOf(Word("Football"), Word("Handball"), Word("Basketball")))
         val trees = WordCategories("Trees", listOf(Word("Oak"), Word("Pine"), Word("Maple")))
-        val carbrands =
-            WordCategories("Car Brands", listOf(Word("Audi"), Word("Lamborghini"), Word("Toyota")))
+        val carbrands = WordCategories("Car Brands", listOf(Word("Audi"), Word("Lamborghini"), Word("Toyota")))
+        val countries = WordCategories("Countries", listOf(Word("France"), Word("Mauritius"), Word("Germany"), Word("Colombia")))
 
-        val wordcategories = listOf(cakes, sports, trees, carbrands)
+        val wordcategories = listOf(cakes, sports, trees, carbrands, countries)
 
         for (category in wordcategories) {
             wordData.wordCategories.add(category)
