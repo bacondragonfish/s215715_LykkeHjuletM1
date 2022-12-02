@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.s215715_lykkehjuletm1.View.navController
 
-
+// Start Screen
+// Not used in the final project.
 @Composable
 fun totalViewStart(navController: NavController) {
 
@@ -38,14 +39,3 @@ fun totalViewStart(navController: NavController) {
 
     }
 }
-
-
-
-/*
-@Composable
-fun StartPrev() {
-
-
-}
-
-*/

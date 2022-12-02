@@ -8,7 +8,7 @@ class CategoryController {
     }
 
 
-    // Our category values with their words in them.
+    // Our Word Categories, with their words in them. Feel free to add more categories and words!
     fun categoryValues() {
         val cakes = WordCategories("Cakes", listOf(Word("Cookie"), Word("Brownie"), Word("Pancake")))
         val sports = WordCategories("Sport", listOf(Word("Football"), Word("Handball"), Word("Basketball")))

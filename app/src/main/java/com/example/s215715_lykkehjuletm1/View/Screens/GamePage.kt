@@ -1,8 +1,6 @@
 package com.example.s215715_lykkehjuletm1.View
 
 import android.app.Activity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -23,7 +21,8 @@ import com.example.s215715_lykkehjuletm1.View_Model.GamePage_ViewModel
 import com.example.s215715_lykkehjuletm1.model.GameStates
 
 
-
+// Setup for NavController
+// ** Not used in the final project.
 @Composable
 fun navController(){
     val navController = rememberNavController()
@@ -49,10 +48,9 @@ fun navController(){
 }
 
 
-
+//This takes in all of Composables, and passes it.
 @Composable
 fun GamePageView(viewModel: GamePage_ViewModel){
-    /* TODO Get State setup */
     val state = viewModel.state.value
     Scaffold(backgroundColor = Color.Gray,
         topBar = {topBar()},
@@ -64,18 +62,20 @@ fun GamePageView(viewModel: GamePage_ViewModel){
 }
 
 
-
+// TotalView is our composable that contains all of the UI elements that exclude the top and bottombar.
+// This is our main UI function, that allows an overview of the different UI elements. Takes in our Model and our viewModel.
 @Composable
 fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
-    // Initial Column, that holds all the Ui elements.
+
     
 
-
+    // Enables our dropdown Menu.
+    // Not used in the final project.
     var dropdownEnabled by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(false) }
 
 
-
+    // Initial Column, that holds all the Ui elements.
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         alertDialog(state = state, viewModel = viewModel)
         Spacer(modifier = Modifier.height(30.dp))
@@ -84,6 +84,7 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
         Row() {
             Text(text = "Press this for a random Category and Word:")
         }
+        // This Row contains our random category Button. When clicked, the randomCategory from our viewmodel is called, returning a random catergory, displayed on the button.
         Row() {
             Button(onClick = { viewModel.randomCategory() }) {
                 Text(text = state.categoryTitle)
@@ -95,8 +96,7 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        // This row is for the spinWheelButton
-
+        // This button is for the "Spin The Wheel" button, returning a number of random points.
         Button(
             onClick = { viewModel.pointsWheel() },
             modifier = Modifier
@@ -125,7 +125,7 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
         Text(text = pointText, fontSize = 16.sp)
 
 
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
         // This row is just a title.
         Row(modifier = Modifier.padding(start = 0.dp)) {
@@ -137,8 +137,19 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
             Text(text = lettersInWord.toString(), fontSize = 25.sp)
 
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        //
+        Row(modifier = Modifier.padding(start = 0.dp)) {
+            if (state.wrongGuess == true) {
+                Text(text = "Wrong guess, spin the wheel again!")
+            }
+            else if(state.rightGuess == true){
+                Text(text = "YES! You've found a letter. Spin the wheel again.")
+            }
+                
+        }
         Spacer(modifier = Modifier.height(40.dp))
-
+        // This row displays the users curent points.
         Row(modifier = Modifier.padding(start = 0.dp)) {
             userPoints(state)
         }
@@ -146,6 +157,7 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
         Row(modifier = Modifier.padding(start = 0.dp)) {
             userInput(viewModel = viewModel)
         }
+        // This row displays the users current lives.
         Row(modifier = Modifier.padding(start = 0.dp)) {
             userLives(state)
 
@@ -153,9 +165,10 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
     }
 }
 
+// A composable that display a text field with the users lives.
 @Composable
 fun userLives(state: GameStates){
-var playerLives = state.playerlives
+var playerLives = state.playerLives
     // For player lives
     Box(modifier = Modifier.padding()){
         Text(text ="Lives: $playerLives", fontSize = 20.sp, color = Color.Green)
@@ -165,7 +178,7 @@ var playerLives = state.playerlives
 
     
 }
-
+// A text field that displays the users points.
 @Composable
 fun userPoints(state: GameStates){
     var playerPoints = state.playerBalance
@@ -179,7 +192,7 @@ fun userPoints(state: GameStates){
     
 
 
-
+// Our Top bar containing the TITLE of the game.
 @Composable
 fun topBar() {
     TopAppBar(modifier = Modifier
@@ -192,7 +205,7 @@ fun topBar() {
     }
 
     }
-
+// A composable that handles our userInput, and a button that allows the user to guess on a letter.
 @Composable
 fun userInput(viewModel: GamePage_ViewModel) {
     var text by remember { mutableStateOf("") }
@@ -200,7 +213,9 @@ fun userInput(viewModel: GamePage_ViewModel) {
             value = text,
             onValueChange = { text = it},
             label = { Text(text = "Guess a letter")},
-            placeholder = { Text(text = "Enter a single letter") }
+            placeholder = { Text(text = "Enter a single letter") },
+
+
 
         )
     Row(modifier = Modifier.padding(start = 0.dp)) {
@@ -224,12 +239,12 @@ fun alertDialog(state: GameStates, viewModel: GamePage_ViewModel) {
 
     if (state.playerLost || state.playerWon) {
         if (state.playerLost) {
-            textToShow = "You lost the game. ):"
-            titleText = "You lost."
+            textToShow = "You have lost your lives. Try Again."
+            titleText = "GAME LOST"
         }
         if (state.playerWon) {
-            textToShow = "You won the game yay"
-            titleText = "You won!"
+            textToShow = "You've Won The game!"
+            titleText = "You've won!"
         }
         AlertDialog(
             onDismissRequest = { },
@@ -256,7 +271,7 @@ fun alertDialog(state: GameStates, viewModel: GamePage_ViewModel) {
         )
     }
 }
-
+// Our composable that creates a buttomAppBar. Nothing is contained in the buttonbar.
 @Composable
 fun bottomBar() {
 
