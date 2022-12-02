@@ -24,7 +24,10 @@ class GamePage_ViewModel(private var data: Data) : ViewModel() {
                 val randomIndex = Random.nextInt(listofPoints.size)
                 val randomPoints = listofPoints[randomIndex]
 
-                _uiState.value = _uiState.value.copy(playerBalance = randomPoints)
+                _uiState.value = _uiState.value.copy(wheelPoints = randomPoints)
+                if (randomPoints == 1){
+                        _uiState.value = _uiState.value.copy(playerBalance = 0)
+                }
         }
 
 
@@ -82,10 +85,16 @@ class GamePage_ViewModel(private var data: Data) : ViewModel() {
                         emptyListForGuess.add(state.value.guessingWord[i])
                         if (state.value.chosenWord[i].equals(char.toUpperCase())) {
                                 emptyListForGuess[i] = char.toUpperCase()
-
+                                showPlayerBalance()
 
                         }
+
                 }
+                if(!state.value.chosenWord.contains(char.toUpperCase())){
+                        showPlayerLives()
+                        }
+                checkIfLost()
+                checkIfWin()
 
                 _uiState.value = _uiState.value.copy(guessingWord = emptyListForGuess)
 
@@ -93,9 +102,49 @@ class GamePage_ViewModel(private var data: Data) : ViewModel() {
         }
 
         fun showPlayerBalance(){
-                var playerBalance = _uiState.value.playerBalance
+                var newPlayerBalance = state.value.playerBalance
+
+
+                _uiState.value = _uiState.value.copy(playerBalance = newPlayerBalance + state.value.wheelPoints)
+
+
+        }
+        fun showPlayerLives() {
+                var newPlayerLives = state.value.playerlives
+                _uiState.value = _uiState.value.copy(playerlives = newPlayerLives - 1)
+
         }
 
+        fun checkIfLost(){
+                if (state.value.playerlives == 0){
+                        _uiState.value = _uiState.value.copy(playerLost = true)
+                }
+
+
+        }
+
+        fun checkIfWin (){
+                if(!state.value.guessingWord.contains('_') ){
+                        _uiState.value = _uiState.value.copy(playerWon = true)
+
+                }
+
+        }
+
+        fun resetAllStates() {
+                _uiState.value = _uiState.value.copy( playerlives= 5,
+                 playerBalance = 0,
+                 chooseCategory= "Choose a Category",
+                 spinReady = false,
+                 chosenWord= "",
+                 guessingWord = mutableListOf(),
+                 categoryTitle = "Click for Category",
+                 wheelPoints = 0,
+                 playerLost = false,
+                 playerWon = false
+                )
+
+        }
         }
 
 

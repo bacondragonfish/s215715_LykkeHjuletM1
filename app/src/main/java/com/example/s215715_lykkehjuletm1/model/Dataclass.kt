@@ -19,7 +19,10 @@ data class GameStates(
     var spinReady: Boolean = false,
     var chosenWord: String = "",
     var guessingWord: MutableList<Char> = mutableListOf(),
-    var categoryTitle: String = "Click for Category"
+    var categoryTitle: String = "Click for Category",
+    var wheelPoints: Int = 0,
+    var playerLost: Boolean = false,
+    var playerWon: Boolean = false
 
 
 

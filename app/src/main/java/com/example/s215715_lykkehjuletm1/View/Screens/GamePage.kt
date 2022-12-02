@@ -1,11 +1,15 @@
 package com.example.s215715_lykkehjuletm1.View
 
+import android.app.Activity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -53,7 +57,7 @@ fun GamePageView(viewModel: GamePage_ViewModel){
     Scaffold(backgroundColor = Color.Gray,
         topBar = {topBar()},
         content = {totalView(state, viewModel)},
-        bottomBar = { buttomBar()}
+        bottomBar = { bottomBar()}
 
     )
 
@@ -73,16 +77,17 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
 
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        alertDialog(state = state, viewModel = viewModel)
         Spacer(modifier = Modifier.height(30.dp))
         // This row is for the catagories, in a drop down menu.
-        
-        Row(){
+
+        Row() {
             Text(text = "Press this for a random Category and Word:")
         }
-        Row(){
-            Button(onClick = {viewModel.randomCategory()}) {
+        Row() {
+            Button(onClick = { viewModel.randomCategory() }) {
                 Text(text = state.categoryTitle)
-                
+
             }
 
         }
@@ -104,7 +109,6 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
             Text(text = "Spin The Wheel")
 
 
-
         }
         Spacer(modifier = Modifier.height(30.dp))
         // This Row is just a title.
@@ -112,16 +116,19 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
             Text(text = "Points to gain:")
         }
         //This Row is for the display of points, when the wheel is spun.
-        var balance = state.playerBalance
+        var balance = state.wheelPoints
         var pointText = "$balance"
+        if (pointText.equals("1")){
+            pointText = "Bankrupt!, You've lost all your points."
+        }
         //Row(modifier = Modifier.padding(start = 0.dp)){
-            Text(text = pointText, fontSize = 16.sp)
+        Text(text = pointText, fontSize = 16.sp)
 
-        
+
         Spacer(modifier = Modifier.height(80.dp))
 
         // This row is just a title.
-        Row(modifier = Modifier.padding(start = 0.dp) ) {
+        Row(modifier = Modifier.padding(start = 0.dp)) {
             Text(text = "Your Word To Guess:", fontSize = 30.sp, fontStyle = FontStyle.Italic)
         }
         // This row holds the display of the guessing word.
@@ -131,33 +138,42 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
 
         }
         Spacer(modifier = Modifier.height(40.dp))
+
+        Row(modifier = Modifier.padding(start = 0.dp)) {
+            userPoints(state)
+        }
         // This Row hold the input text field to put the guessing letter.
         Row(modifier = Modifier.padding(start = 0.dp)) {
             userInput(viewModel = viewModel)
         }
+        Row(modifier = Modifier.padding(start = 0.dp)) {
+            userLives(state)
 
+        }
     }
 }
 
 @Composable
-fun spinWheelButton(modifier: Modifier = Modifier, viewModel: GamePage_ViewModel){
-
-    Button(
-        onClick = { viewModel.pointsWheel() },
-        modifier = Modifier
-            .size(160.dp, 40.dp)
-            .padding(),
-        colors = ButtonDefaults.buttonColors(),
-
-
-    ) {
-        Text(text = "Spin The Wheel")
-
-
-
+fun userLives(state: GameStates){
+var playerLives = state.playerlives
+    // For player lives
+    Box(modifier = Modifier.padding()){
+        Text(text ="Lives: $playerLives", fontSize = 20.sp, color = Color.Green)
+        
+        
     }
+
+    
 }
 
+@Composable
+fun userPoints(state: GameStates){
+    var playerPoints = state.playerBalance
+    Box(modifier = Modifier.padding()){
+        Text(text = "Points:   $playerPoints", fontSize = 20.sp, color = Color.Blue
+        )
+    }
+}
 
 
     
@@ -172,14 +188,7 @@ fun topBar() {
         Row(modifier = Modifier.padding(100.dp, 0.dp)) {
              Text(text = "LYKKEHJULET", fontSize = 25.sp)
             fontResource(fontFamily = FontFamily.Default)
-
-
         }
-        
-
-
-
-
     }
 
     }
@@ -194,35 +203,67 @@ fun userInput(viewModel: GamePage_ViewModel) {
             placeholder = { Text(text = "Enter a single letter") }
 
         )
+    Row(modifier = Modifier.padding(start = 0.dp)) {
+        Button(onClick = { viewModel.checkGuessInWord(text.single()) }) {
+            Modifier.
+            size(80.dp, 40.dp)
+            Text(text = "Guess")
 
-    Button(onClick = { viewModel.checkGuessInWord(text.single()) }) {
-        Modifier.
-        size(50.dp, 40.dp)
+        }
+
     }
-    }
 
-
- @Composable
- fun showGuessingWord(){
-
-     Column() {
-         Text(text = "_"+"_"+"_")
-         Modifier.fillMaxWidth()
-     }
-
-
-
- }
+}
 
 
 @Composable
-fun buttomBar() {
+fun alertDialog(state: GameStates, viewModel: GamePage_ViewModel) {
+    val activity = (LocalContext.current as? Activity)
+    var textToShow = ""
+    var titleText = ""
+
+    if (state.playerLost || state.playerWon) {
+        if (state.playerLost) {
+            textToShow = "You lost the game. ):"
+            titleText = "You lost."
+        }
+        if (state.playerWon) {
+            textToShow = "You won the game yay"
+            titleText = "You won!"
+        }
+        AlertDialog(
+            onDismissRequest = { },
+            title = { Text(text = titleText) },
+            text = { Text(text = textToShow) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.resetAllStates()
+                    }
+                ) {
+                    Text(text = "New Game")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        activity?.finish()
+                    },
+                ) {
+                    Text(text = "Exit")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun bottomBar() {
 
     BottomAppBar {
 
 
     }
-
 
 
 }
