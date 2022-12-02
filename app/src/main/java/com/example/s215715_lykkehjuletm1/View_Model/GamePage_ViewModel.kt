@@ -84,6 +84,7 @@ class GamePage_ViewModel(private var data: Data) : ViewModel() {
                                 emptyListForGuess[i] = char.toUpperCase()
                                 showPlayerBalance()
                                 _uiState.value = _uiState.value.copy(rightGuess = true)
+                                checkIfWin()
 
                         }
 
@@ -118,6 +119,7 @@ class GamePage_ViewModel(private var data: Data) : ViewModel() {
         fun showPlayerLives() {
                 var newPlayerLives = state.value.playerLives
                 _uiState.value = _uiState.value.copy(playerLives = newPlayerLives - 1)
+
 
         }
         // This function updates our playerLost state, if the player has 0 lives left.

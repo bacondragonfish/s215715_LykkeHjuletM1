@@ -88,9 +88,7 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
         Row() {
             Button(onClick = { viewModel.randomCategory() }) {
                 Text(text = state.categoryTitle)
-
             }
-
         }
         val categories = state.chooseCategory
 
@@ -107,8 +105,6 @@ fun totalView(state: GameStates, viewModel: GamePage_ViewModel) {
 
             ) {
             Text(text = "Spin The Wheel")
-
-
         }
         Spacer(modifier = Modifier.height(30.dp))
         // This Row is just a title.
@@ -172,11 +168,7 @@ var playerLives = state.playerLives
     // For player lives
     Box(modifier = Modifier.padding()){
         Text(text ="Lives: $playerLives", fontSize = 20.sp, color = Color.Green)
-        
-        
     }
-
-    
 }
 // A text field that displays the users points.
 @Composable
@@ -187,10 +179,6 @@ fun userPoints(state: GameStates){
         )
     }
 }
-
-
-    
-
 
 // Our Top bar containing the TITLE of the game.
 @Composable
@@ -203,8 +191,7 @@ fun topBar() {
             fontResource(fontFamily = FontFamily.Default)
         }
     }
-
-    }
+}
 // A composable that handles our userInput, and a button that allows the user to guess on a letter.
 @Composable
 fun userInput(viewModel: GamePage_ViewModel) {
@@ -213,21 +200,15 @@ fun userInput(viewModel: GamePage_ViewModel) {
             value = text,
             onValueChange = { text = it},
             label = { Text(text = "Guess a letter")},
-            placeholder = { Text(text = "Enter a single letter") },
-
-
-
+            placeholder = { Text(text = "Enter a single letter") }
         )
     Row(modifier = Modifier.padding(start = 0.dp)) {
         Button(onClick = { viewModel.checkGuessInWord(text.single()) }) {
             Modifier.
             size(80.dp, 40.dp)
             Text(text = "Guess")
-
         }
-
     }
-
 }
 
 
@@ -236,6 +217,7 @@ fun alertDialog(state: GameStates, viewModel: GamePage_ViewModel) {
     val activity = (LocalContext.current as? Activity)
     var textToShow = ""
     var titleText = ""
+    var playerPoints = state.playerBalance
 
     if (state.playerLost || state.playerWon) {
         if (state.playerLost) {
@@ -243,7 +225,7 @@ fun alertDialog(state: GameStates, viewModel: GamePage_ViewModel) {
             titleText = "GAME LOST"
         }
         if (state.playerWon) {
-            textToShow = "You've Won The game!"
+            textToShow = "You've Won The game! Your socre was $playerPoints"
             titleText = "You've won!"
         }
         AlertDialog(
